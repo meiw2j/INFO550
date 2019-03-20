@@ -40,7 +40,22 @@ ui <- fluidPage(
   ),
   tabPanel("Table",
               tableOutput("table")
+             ),
+  
+  tabPanel("Boxplot",
+           sidebarLayout(
+             sidebarPanel(
+               radioButtons("z", "Select variable of interest:",
+                            list("Pathogen1"='a',"Pathogen2"='b',"Pathogen3"='c',"Pathogen4"='d')
+               )
+             ),
+             
+             # Show a plot of the generated distribution
+             mainPanel(
+               plotOutput("boxplot")
              )
+           )
+  )
           
 )
 )
@@ -95,6 +110,23 @@ server <- function(input, output) {
     sum4<-table(mada$Pathogen4)
     sum<-rbind(sum1,sum2,sum3,sum4)
     
+  })
+  
+  output$boxplot<-renderPlot({
+    if(input$z=='a'){
+      i<-4
+    }
+    if(input$z=='b'){
+      i<-5
+    }
+    if(input$z=='c'){
+      i<-6
+    }
+    if(input$z=='d'){
+      i<-7
+    }
+    mada[,i]<-as.factor(mada[,i])
+    ggplot(mada,aes(x=mada[,i], y=age, fill=mada[,i]))+geom_boxplot()
   })
   
 }
