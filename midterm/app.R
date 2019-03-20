@@ -8,24 +8,23 @@ ui <- fluidPage(
   # Application title
   titlePanel("Epidemiology of enteric pathogen infection transmissions in Madagascar"),
   
-  # Sidebar with a slider input for number of bins 
-  sidebarLayout(
-    sidebarPanel(
-      radioButtons("x", "Select variable of interest:",
+  # Sidebar with a slider input for number of bins
+  navbarPage("Navbar!",
+   tabPanel("Histogram",
+     sidebarLayout(
+      sidebarPanel(
+        radioButtons("x", "Select variable of interest:",
                    list("age"='a',"Height"='b',"Weight"='c')
       )
     ),
     
     # Show a plot of the generated distribution
     mainPanel(
-      tabsetPanel(type="tabs",
-                  tabPanel("Histogram", plotOutput("histogram")),
-                  tabPanel("Table", tableOutput("table")),
-                  tabPanel("Boxplot", plotOutput("boxPlot"))
+     plotOutput("histogram")
       )
     )
   )
-)
+))
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
