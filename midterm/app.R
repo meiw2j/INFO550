@@ -6,7 +6,7 @@ library(shiny)
 ui <- fluidPage(
   
   # Application title
-  titlePanel("Epidemiology of enteric pathogen infection transmissions in Madagascar"),
+  titlePanel("Epidemiology of Enteric Pathogens Infection in Madagascar"),
   
   # Sidebar with a slider input for number of bins
   navbarPage("Navbar",
