@@ -55,6 +55,10 @@ ui <- fluidPage(
                plotOutput("boxplot")
              )
            )
+  ),
+  
+  tabPanel("Regression model",
+           tableOutput("model")
   )
           
 )
@@ -65,6 +69,8 @@ server <- function(input, output) {
   mada<-read.csv('Midterm dataset2_Wenjie.csv')
   mada$sex<-as.factor(mada$sex)
   mada$newtype<-as.factor(mada$newtype)
+  mada$Pathogen1<-as.factor(mada$Pathogen1)
+  mada$newage<-as.factor(mada$newage)
   library(ggplot2)
   library(tidyverse)
   library(dplyr)
@@ -127,6 +133,11 @@ server <- function(input, output) {
     }
     mada[,i]<-as.factor(mada[,i])
     ggplot(mada,aes(x=mada[,i], y=age, fill=mada[,i]))+geom_boxplot()
+  })
+  
+  output$model<-renderTable({
+    logit2<-glm(Pathogen1 ~ newage + sex + newtype+ Height+ weight, data = mada, family = "binomial"(link="logit"))
+    anova(logit2, test="Chisq")
   })
   
 }
