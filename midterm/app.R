@@ -9,12 +9,12 @@ ui <- fluidPage(
   titlePanel("Epidemiology of enteric pathogen infection transmissions in Madagascar"),
   
   # Sidebar with a slider input for number of bins
-  navbarPage("Navbar!",
+  navbarPage("Navbar",
    tabPanel("Histogram",
      sidebarLayout(
       sidebarPanel(
         radioButtons("x", "Select variable of interest:",
-                   list("age"='a',"Height"='b',"Weight"='c')
+                   list("Age"='a',"Height"='b',"Weight"='c')
       )
     ),
     
@@ -28,7 +28,7 @@ ui <- fluidPage(
            sidebarLayout(
              sidebarPanel(
                radioButtons("y", "Select variable of interest:",
-                            list("sex"='d',"activities"='e')
+                            list("Sex"='d',"Activities"='e')
                )
              ),
              
@@ -45,8 +45,8 @@ ui <- fluidPage(
   tabPanel("Boxplot",
            sidebarLayout(
              sidebarPanel(
-               radioButtons("z", "Select variable of interest:",
-                            list("Pathogen1"='a',"Pathogen2"='b',"Pathogen3"='c',"Pathogen4"='d')
+               radioButtons("z", "Select Pathogen of interest:",
+                            list("Shigella"='a',"Entamoeba histolytica"='b',"Salmonella"='c',"Campylobacter"='d')
                )
              ),
              
@@ -57,7 +57,7 @@ ui <- fluidPage(
            )
   ),
   
-  tabPanel("Regression model",
+  tabPanel("ANOVA",
            tableOutput("model")
   )
           
@@ -86,7 +86,7 @@ server <- function(input, output) {
     if(input$x=='c'){
       i<-15
     }
-    hist(mada[,i])
+    hist(mada[,i],xlab="Variable of Interest",main="Historgram of Variable of Interest")
   })
   
   output$pieplot<-renderPlot({
@@ -105,7 +105,8 @@ server <- function(input, output) {
             axis.ticks = element_blank(),
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
-            panel.border = element_blank())
+            panel.border = element_blank(),
+            legend.title = element_blank())
     p1
   })
   
@@ -115,6 +116,10 @@ server <- function(input, output) {
     sum3<-table(mada$Pathogen3)
     sum4<-table(mada$Pathogen4)
     sum<-rbind(sum1,sum2,sum3,sum4)
+    rname<-matrix(c("Shigella","Entamoeba histolytica","Salmonella","Campylobacter"),ncol=1)
+    sum<-cbind(rname,sum)
+    colnames(sum)<-c("Patghoen","Noninfection","Infection")
+    sum
     
   })
   
@@ -132,12 +137,16 @@ server <- function(input, output) {
       i<-7
     }
     mada[,i]<-as.factor(mada[,i])
-    ggplot(mada,aes(x=mada[,i], y=age, fill=mada[,i]))+geom_boxplot()
+    ggplot(mada,aes(x=mada[,i], y=age, fill=mada[,i]))+geom_boxplot()+xlab("Pathogen of interest")+theme(axis.text.x = element_blank( ),axis.ticks=element_blank(),legend.title = element_blank())+ scale_fill_discrete(labels = c("Noninfection", "Infection"))
   })
   
   output$model<-renderTable({
-    logit2<-glm(Pathogen1 ~ newage + sex + newtype+ Height+ weight, data = mada, family = "binomial"(link="logit"))
-    anova(logit2, test="Chisq")
+    logit2<-glm(Pathogen1 ~ newage + sex + newtype, data = mada, family = "binomial"(link="logit"))
+    an1<-anova(logit2, test="Chisq")
+    ran<-matrix(c("Null","Age groups","Sex","Activities groups"),ncol=1)
+    anova<-cbind(ran,an1)
+    colnames(anova)[1]<-("Variables")
+    anova
   })
   
 }
