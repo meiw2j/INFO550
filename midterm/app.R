@@ -73,7 +73,7 @@ server <- function(input, output) {
   mada$newage<-as.factor(mada$newage)
   library(ggplot2)
   #library(tidyverse)
-  library(dplyr)
+  #library(dplyr)
   
   
   output$histogram<-renderPlot({
