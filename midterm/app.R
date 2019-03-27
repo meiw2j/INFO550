@@ -72,7 +72,7 @@ server <- function(input, output) {
   mada$Pathogen1<-as.factor(mada$Pathogen1)
   mada$newage<-as.factor(mada$newage)
   library(ggplot2)
-  library(tidyverse)
+  #library(tidyverse)
   library(dplyr)
   
   
